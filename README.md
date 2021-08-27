@@ -7,13 +7,15 @@
 
 [![NPM](https://nodei.co/npm/gtfs-tts.png?downloads=true)](https://nodei.co/npm/gtfs-tts/)
 
-GTFS Text-to-Speech Tester is a tool that will read all [GTFS](https://gtfs.org) stop names using Text-to-Speech and allow flagging which names need Text-to-Speech values for `tts_stop_name` in `stops.txt`. Using this tool is the quickest way to determine which stops need phoenetic spellings, abbreviations written out, large digits written as words, ordinals written out or other changes so that they can be read. [Read More on GTFS Text-to-Speech](https://docs.google.com/document/d/1LObjgDyiiE6UBiA3GpoNOlZ36li-KKj6dwBzRTDa7VU/edit#heading=h.puwtf1nwatif)
+GTFS Text-to-Speech Tester is a command-line tool that will read all [GTFS](https://gtfs.org) stop names using Text-to-Speech and allow flagging which names need Text-to-Speech values for `tts_stop_name` in `stops.txt`. Using this tool is the quickest way to determine which stops need phoenetic spellings, abbreviations written out, large digits written as words, ordinals written out or other changes so that they can be read. [Read More on GTFS Text-to-Speech](https://docs.google.com/document/d/1LObjgDyiiE6UBiA3GpoNOlZ36li-KKj6dwBzRTDa7VU/edit#heading=h.puwtf1nwatif)
 
 ## Installation
 
-Install from npm
+* Install node.js https://nodejs.org/en/download/
 
-    npm install gtfs-tts
+* Install `gtfs-tts` globally from npm:
+
+    npm install gtfs-tts -g
 
 ## Running
 
@@ -34,6 +36,7 @@ For each stop that doesn't have a value for `tts_stop_name`, it will ask if the 
 `y` if correct
 `n` if incorrect
 `r` to repeat the stop name
+`e` to end reading stop names (will export what you have processed thus far)
 
 After it is complete, GTFS Text-to-Speech will export a version of the GTFS where stops with incorrect pronunciation have `***NEEDS VALUE***` added to the `tts_stop_name` column in `stops.txt`. Using this exported stops.txt, you can manually correct each stop that needs a `tts_stop_name` value.
 
