@@ -1,0 +1,50 @@
+{
+  "name": "gtfs-tts",
+  "description": "Review GTFS stop pronunciations to determine which stops need a tts_stop_name value.",
+  "version": "0.1.0",
+  "keywords": [
+    "transit",
+    "gtfs",
+    "transportation",
+    "text-to-speech",
+    "accessibility"
+  ],
+  "private": false,
+  "author": "Brendan Nee <brendan@blinktag.com>",
+  "homepage": "https://github.com/BlinkTagInc/node-gtfs-tts",
+  "bugs": {
+    "url": "https://github.com/BlinkTagInc/node-gtfs-tts"
+  },
+  "repository": "git://github.com/BlinkTagInc/node-gtfs-tts",
+  "contributors": [],
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint . --ext .js",
+    "lint:fix": "npm run lint -- --fix"
+  },
+  "bin": {
+    "gtfs-tts": "bin/gtfs-tts.js"
+  },
+  "main": "index",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "cli-table": "^0.3.6",
+    "gtfs": "3.1.0",
+    "lodash-es": "^4.17.21",
+    "node-fetch": "^2.6.1",
+    "pretty-error": "^3.0.4",
+    "readline-sync": "^1.4.10",
+    "sanitize-filename": "^1.6.3",
+    "say": "^0.16.0",
+    "untildify": "^4.0.0",
+    "yargs": "^17.1.1"
+  },
+  "engines": {
+    "node": ">= 14.17.5"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-xo": "^0.38.0"
+  }
+}

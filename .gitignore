@@ -1,0 +1,8 @@
+node_modules
+gtfs-output
+/config*
+!config-sample.json
+
+.git
+.DS_Store
+.vscode

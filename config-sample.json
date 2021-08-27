@@ -1,0 +1,4 @@
+{
+  "gtfsPath": "~/Sites/marintransit/marintransit-gtfs",
+  "sqlitePath": "/tmp/gtfs"
+}
