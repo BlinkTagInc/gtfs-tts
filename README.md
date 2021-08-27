@@ -9,6 +9,8 @@
 
 GTFS Text-to-Speech Tester is a command-line tool that will read all [GTFS](https://gtfs.org) stop names using Text-to-Speech and allow flagging which names need Text-to-Speech values for `tts_stop_name` in `stops.txt`. Using this tool is the quickest way to determine which stops need phoenetic spellings, abbreviations written out, large digits written as words, ordinals written out or other changes so that they can be read. [Read More on GTFS Text-to-Speech](https://docs.google.com/document/d/1LObjgDyiiE6UBiA3GpoNOlZ36li-KKj6dwBzRTDa7VU/edit#heading=h.puwtf1nwatif)
 
+<img width="818" src="https://user-images.githubusercontent.com/96217/131066444-a28f4ba3-6e93-4d20-9d6a-da32234e2350.png">
+
 ## Installation
 
 * Install node.js https://nodejs.org/en/download/
