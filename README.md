@@ -1,11 +1,22 @@
+<p align="center">
+  ➡️
+  <a href="#installation">Installation</a> |
+  <a href="#running">Running</a>
+  ⬅️
+  <br /><br />
+  <img src="docs/images/gtfs-tts-logo.svg" alt="GTFS Text-to-Speech Tester" />
+  <br /><br />
+  <a href="https://www.npmjs.com/package/gtfs-tts" rel="nofollow"><img src="https://img.shields.io/npm/v/gtfs-tts.svg?style=flat" style="max-width: 100%;"></a>
+  <a href="https://www.npmjs.com/package/gtfs-tts" rel="nofollow"><img src="https://img.shields.io/npm/dm/gtfs-tts.svg?style=flat" style="max-width: 100%;"></a>
+  <a href="https://github.com/BlinkTagInc/gtfs-tts/actions?query=workflow%3A%22Node+CI%22"><img src="https://img.shields.io/github/workflow/status/BlinkTagInc/gtfs-tts/Node%20CI.svg" alt="CircleCI" style="max-width: 100%;"></a>
+  <img src="https://img.shields.io/badge/License-MIT-yellow.svg">
+  <br /><br />
+  Review GTFS stop pronunciations automatically to determine which stops need a tts_stop_name value.
+  <br /><br />
+  <a href="https://nodei.co/npm/gtfs-tts/" rel="nofollow"><img src="https://nodei.co/npm/gtfs-tts.png?downloads=true" alt="NPM" style="max-width: 100%;"></a>
+</p>
 
-# GTFS Text-to-Speech Tester
-
-[![NPM version](https://img.shields.io/npm/v/gtfs-tts.svg?style=flat)](https://www.npmjs.com/package/gtfs-tts)
-[![David](https://img.shields.io/david/blinktaginc/gtfs-tts.svg)]()
-[![npm](https://img.shields.io/npm/dm/gtfs-tts.svg?style=flat)]()
-
-[![NPM](https://nodei.co/npm/gtfs-tts.png?downloads=true)](https://nodei.co/npm/gtfs-tts/)
+<hr>
 
 GTFS Text-to-Speech Tester is a command-line tool that will read all [GTFS](https://gtfs.org) stop names using Text-to-Speech and allow flagging which names need Text-to-Speech values for `tts_stop_name` in `stops.txt`. Using this tool is the quickest way to determine which stops need phoenetic spellings, abbreviations written out, large digits written as words, ordinals written out or other changes so that they can be read. [Read More on GTFS Text-to-Speech](https://docs.google.com/document/d/1LObjgDyiiE6UBiA3GpoNOlZ36li-KKj6dwBzRTDa7VU/edit#heading=h.puwtf1nwatif)
 
@@ -58,4 +69,4 @@ Then, after GTFS import you can re-run and skipImport if using a persistent sqli
 
 ## Contributing
 
-Pull requests are welcome, as is feedback and [reporting issues](https://github.com/blinktaginc/node-gtfs-tts/issues).
+Pull requests are welcome, as is feedback and [reporting issues](https://github.com/blinktaginc/gtfs-tts/issues).

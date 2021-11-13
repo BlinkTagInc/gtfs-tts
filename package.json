@@ -11,11 +11,11 @@
   ],
   "private": false,
   "author": "Brendan Nee <brendan@blinktag.com>",
-  "homepage": "https://github.com/BlinkTagInc/node-gtfs-tts",
+  "homepage": "https://github.com/BlinkTagInc/gtfs-tts",
   "bugs": {
-    "url": "https://github.com/BlinkTagInc/node-gtfs-tts"
+    "url": "https://github.com/BlinkTagInc/gtfs-tts"
   },
-  "repository": "git://github.com/BlinkTagInc/node-gtfs-tts",
+  "repository": "git://github.com/BlinkTagInc/gtfs-tts",
   "contributors": [],
   "license": "MIT",
   "type": "module",
