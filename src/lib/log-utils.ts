@@ -38,7 +38,7 @@ export function logWarning(config) {
     return config.logFunction;
   }
 
-  return text => {
+  return (text) => {
     process.stdout.write(`\n${formatWarning(text)}\n`);
   };
 }
@@ -51,7 +51,7 @@ export function logError(config) {
     return config.logFunction;
   }
 
-  return text => {
+  return (text) => {
     process.stdout.write(`\n${formatError(text)}\n`);
   };
 }

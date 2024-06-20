@@ -29,7 +29,7 @@ const { argv } = yargs(hideBin(process.argv))
   })
   .default('skipImport', undefined);
 
-const handleError = error => {
+const handleError = (error: any) => {
   const text = error || 'Unknown Error';
   process.stdout.write(`\n${formatError(text)}\n`);
   console.error(error);
@@ -42,5 +42,4 @@ const setupImport = async () => {
   process.exit();
 };
 
-setupImport()
-  .catch(handleError);
+setupImport().catch(handleError);

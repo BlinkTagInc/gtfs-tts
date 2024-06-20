@@ -6,3 +6,6 @@ gtfs-output
 .git
 .DS_Store
 .vscode
+
+# Build files
+/dist
