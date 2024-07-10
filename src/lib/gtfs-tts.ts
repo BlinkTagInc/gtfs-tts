@@ -138,7 +138,7 @@ const gtfsTTS = async (initialConfig: {
     .prepare(
       "SELECT COUNT(*) FROM stops WHERE tts_stop_name = '***NEEDS VALUE***';",
     )
-    .all();
+    .get();
 
   config.log(`GTFS Data created at ${exportPath}`);
   config.log(

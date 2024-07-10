@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Fixed
 - Fix for export folder name
+- Fix for export stats
 
 ### Added
 - Release-it Changelog
