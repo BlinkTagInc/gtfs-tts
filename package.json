@@ -1,7 +1,7 @@
 {
   "name": "gtfs-tts",
   "description": "Review GTFS stop pronunciations to determine which stops need a tts_stop_name value.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "keywords": [
     "transit",
     "gtfs",
