@@ -2,7 +2,7 @@ import path from 'node:path';
 
 import { clone, omit } from 'lodash-es';
 import chalk from 'chalk';
-import { openDb, importGtfs, exportGtfs, getStops } from 'gtfs';
+import { openDb, importGtfs, exportGtfs, getStops, getAgencies } from 'gtfs';
 import readlineSync from 'readline-sync';
 import untildify from 'untildify';
 import say from 'say';
@@ -89,9 +89,9 @@ const gtfsTTS = async (initialConfig: {
 
     if (answer.trim().toLowerCase() === 'n') {
       const statement = db.prepare(
-        'UPDATE stops SET tts_stop_name = ? WHERE stop_id = ?',
+        "UPDATE stops SET tts_stop_name = '***NEEDS VALUE***' WHERE stop_id = ?",
       );
-      statement.run('***NEEDS VALUE***', stop.stop_id);
+      statement.run(stop.stop_id);
       return;
     }
 
@@ -119,8 +119,10 @@ const gtfsTTS = async (initialConfig: {
   }
 
   // Get agency name for export folder from first line of agency.txt
-  const agency = db.prepare('SELECT agency_name FROM agency;').all();
-  const folderName = generateFolderName(agency.agency_name);
+  const agencies = getAgencies({}, ['agency_name']);
+  const folderName = generateFolderName(
+    agencies?.[0].agency_name ?? 'unknown-agency',
+  );
   const defaultExportPath = path.join(process.cwd(), 'gtfs-output', folderName);
   const exportPath = untildify(config.exportPath || defaultExportPath);
 
@@ -134,7 +136,7 @@ const gtfsTTS = async (initialConfig: {
 
   const stopTTSCount = db
     .prepare(
-      'SELECT COUNT(*) FROM stops WHERE tts_stop_name="***NEEDS VALUE***";',
+      "SELECT COUNT(*) FROM stops WHERE tts_stop_name = '***NEEDS VALUE***';",
     )
     .all();
 
