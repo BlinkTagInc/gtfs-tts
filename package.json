@@ -58,6 +58,16 @@
     "tsup": "^8.1.0",
     "typescript": "^5.4.5"
   },
+  "release-it": {
+    "github": {
+      "release": true
+    },
+    "plugins": {
+      "@release-it/keep-a-changelog": {
+        "filename": "CHANGELOG.md"
+      }
+    }
+  },
   "prettier": {
     "singleQuote": true
   },
