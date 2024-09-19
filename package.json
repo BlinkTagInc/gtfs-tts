@@ -16,7 +16,9 @@
     "url": "https://github.com/BlinkTagInc/gtfs-tts"
   },
   "repository": "git://github.com/BlinkTagInc/gtfs-tts",
-  "contributors": [],
+  "contributors": [
+    "Scott Berkley"
+  ],
   "license": "MIT",
   "type": "module",
   "scripts": {

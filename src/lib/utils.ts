@@ -4,7 +4,7 @@
 export function setDefaultConfig(initialConfig) {
   const defaults = {
     skipImport: false,
-    sqlitePath: '/tmp/gtfs',
+    sqlitePath: ':memory:',
   };
 
   return Object.assign(defaults, initialConfig);
