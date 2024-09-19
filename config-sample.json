@@ -1,4 +1,3 @@
 {
-  "gtfsPath": "~/Sites/marintransit/marintransit-gtfs",
-  "sqlitePath": "/tmp/gtfs"
+  "gtfsUrl": "https://marintransit.org/data/google_transit.zip"
 }
