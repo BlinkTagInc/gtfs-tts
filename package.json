@@ -22,7 +22,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "prepare": "husky install",
+    "prepare": "husky",
     "build": "tsup"
   },
   "bin": {
@@ -35,7 +35,7 @@
   ],
   "dependencies": {
     "chalk": "^5.3.0",
-    "gtfs": "4.12.0",
+    "gtfs": "4.14.4",
     "lodash-es": "^4.17.21",
     "pretty-error": "^4.0.0",
     "readline-sync": "^1.4.10",
@@ -45,20 +45,20 @@
     "yargs": "^17.7.2"
   },
   "engines": {
-    "node": ">= 14.17.5"
+    "node": ">= 20.11.0"
   },
   "devDependencies": {
     "@types/lodash-es": "^4.17.12",
-    "@types/node": "^20.14.10",
+    "@types/node": "^20.16.5",
     "@types/readline-sync": "^1.4.8",
-    "@types/yargs": "^17.0.32",
-    "eslint": "^9.6.0",
-    "eslint-config-xo": "^0.45.0",
-    "husky": "^9.0.11",
-    "lint-staged": "^15.2.7",
-    "prettier": "^3.3.2",
-    "tsup": "^8.1.0",
-    "typescript": "^5.5.3"
+    "@types/yargs": "^17.0.33",
+    "eslint": "^9.10.0",
+    "eslint-config-xo": "^0.46.0",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "prettier": "^3.3.3",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.2"
   },
   "release-it": {
     "github": {
@@ -68,6 +68,9 @@
       "@release-it/keep-a-changelog": {
         "filename": "CHANGELOG.md"
       }
+    },
+    "hooks": {
+      "after:bump": "npm run build"
     }
   },
   "prettier": {

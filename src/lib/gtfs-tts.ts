@@ -1,6 +1,5 @@
 import path from 'node:path';
 
-import { clone, omit } from 'lodash-es';
 import chalk from 'chalk';
 import { openDb, importGtfs, exportGtfs, getStops, getAgencies } from 'gtfs';
 import readlineSync from 'readline-sync';
@@ -130,6 +129,7 @@ const gtfsTTS = async (initialConfig: {
 
   // Export GTFS with tts_stop_name field
   await exportGtfs({
+    agencies: [],
     exportPath,
     sqlitePath: config.sqlitePath,
   });

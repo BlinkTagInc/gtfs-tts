@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Handle case when no sqlitePath is specified
 
+### Updated
+- Dependency Updates
+
 ## [0.2.1] - 2024-07-09
 ### Fixed
 - Fix for export folder name
