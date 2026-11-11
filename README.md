@@ -24,7 +24,7 @@ GTFS Text-to-Speech Tester is a command-line tool that will read all [GTFS](http
 
 ## Installation
 
-* Install node.js https://nodejs.org/en/download/
+* Install Node.js 22.18+ (22.x), 24, or 26+. This version uses `gtfs@5.0.0-beta.0`.
 
 * Install `gtfs-tts` globally from npm:
 
@@ -42,7 +42,7 @@ If you want to grab from a URL:
 
     gtfs-tts --gtfsUrl https://transitfeeds.com/p/marin-transit/345/latest/download
 
-The tool will read every stop listed in `stops.txt` using [your systems text-to-speech engine](https://www.npmjs.com/package/say). If a stop already has a value for `tts_stop_name` it will read that value and then skip to the next.
+The tool will read every stop listed in `stops.txt` using [your systems text-to-speech engine](https://www.npmjs.com/package/say). If a stop already has a value for `tts_stop_name`, it reads that value and still asks you to review it.
 
 For each stop that doesn't have a value for `tts_stop_name`, it will ask if the pronunciation was correct and you can respond with:
 

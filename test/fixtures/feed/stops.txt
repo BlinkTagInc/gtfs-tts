@@ -1,0 +1,4 @@
+stop_id,stop_name,stop_lat,stop_lon,tts_stop_name
+002,Second St,37,-122,Second Street
+001,First St,37.1,-122.1,
+003,Third St,37.2,-122.2,

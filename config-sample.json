@@ -1,3 +1,4 @@
 {
-  "gtfsUrl": "https://marintransit.org/data/google_transit.zip"
+  "gtfsUrl": "https://marintransit.org/data/google_transit.zip",
+  "sourceId": "marin-transit"
 }

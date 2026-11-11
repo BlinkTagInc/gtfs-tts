@@ -7,7 +7,7 @@ import { getConfig } from '../lib/file-utils.js';
 import { formatError } from '../lib/log-utils.js';
 import gtfsTTS from '../index.js';
 
-const { argv } = yargs(hideBin(process.argv))
+const argv = await yargs(hideBin(process.argv))
   .usage('Usage: $0 --configPath ./config.json')
   .help()
   .option('c', {
@@ -27,7 +27,16 @@ const { argv } = yargs(hideBin(process.argv))
     describe: 'Don’t import GTFS file.',
     type: 'boolean',
   })
-  .default('skipImport', undefined);
+  .option('sqlitePath', {
+    type: 'string',
+    describe: 'Path to a v5 SQLite database',
+  })
+  .option('sourceId', {
+    type: 'string',
+    describe: 'Stable feed identity (default: default)',
+  })
+  .default('skipImport', undefined)
+  .parseAsync();
 
 const handleError = (error: any) => {
   const text = error || 'Unknown Error';

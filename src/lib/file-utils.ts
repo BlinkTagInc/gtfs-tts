@@ -8,7 +8,10 @@ import untildify from 'untildify';
 /*
  * Attempt to parse the specified config JSON file.
  */
-export async function getConfig(argv) {
+export async function getConfig(argv: {
+  configPath?: string;
+  [key: string]: unknown;
+}) {
   let config;
 
   if (argv.configPath) {
@@ -60,7 +63,7 @@ export async function getConfig(argv) {
  * Prepare the specified directory for saving HTML timetables by deleting
  * everything and creating the expected folders.
  */
-export async function prepDirectory(exportPath) {
+export async function prepDirectory(exportPath: string) {
   await rm(exportPath, { recursive: true, force: true });
   await mkdir(exportPath, { recursive: true });
 }
@@ -68,6 +71,6 @@ export async function prepDirectory(exportPath) {
 /*
  * Generate a folder name based on a string.
  */
-export function generateFolderName(folderName) {
+export function generateFolderName(folderName: string) {
   return snakeCase(sanitize(folderName));
 }

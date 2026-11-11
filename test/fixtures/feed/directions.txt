@@ -1,0 +1,2 @@
+route_id,direction_id,direction
+R,0,Outbound

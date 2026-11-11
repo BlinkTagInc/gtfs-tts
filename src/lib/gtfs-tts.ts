@@ -1,149 +1,112 @@
 import path from 'node:path';
-
 import chalk from 'chalk';
-import { openDb, importGtfs, exportGtfs, getStops, getAgencies } from 'gtfs';
+import { Gtfs } from 'gtfs';
 import readlineSync from 'readline-sync';
 import untildify from 'untildify';
 import say from 'say';
+import { generateFolderName } from './file-utils.js';
+import { log, logError } from './log-utils.js';
+import { gtfsOptions, setDefaultConfig, type AppConfig } from './utils.js';
 
-import { generateFolderName, prepDirectory } from './file-utils.js';
-import { log, logWarning, logError } from './log-utils.js';
-import { setDefaultConfig } from './utils.js';
+const marker = '***NEEDS VALUE***';
 
-interface IStop {
-  stop_id: string;
-  stop_name: string;
-  tts_stop_name?: string;
-}
-
-/*
- * Loop through each stop and pronounce each stop name
- */
-const gtfsTTS = async (initialConfig: {
-  sqlitePath?: string;
-  gtfsPath?: string;
-  gtfsUrl?: string;
-}) => {
+const gtfsTTS = async (initialConfig: AppConfig) => {
   const config = setDefaultConfig(initialConfig);
-  config.log = log(config);
-  config.logWarning = logWarning(config);
-  config.logError = logError(config);
-
-  let db;
-
-  try {
-    db = openDb(config);
-  } catch (error: any) {
-    if (error?.code === 'SQLITE_CANTOPEN') {
-      config.logError(
-        `Unable to open sqlite database "${config.sqlitePath}" defined as \`sqlitePath\` config.json. Ensure the parent directory exists or remove \`sqlitePath\` from config.json.`,
-      );
-    }
-
-    throw error;
-  }
-
-  if (!config.gtfsPath && !config.gtfsUrl) {
+  const writeLog = log(config);
+  if (!config.skipImport && !config.gtfsPath && !config.gtfsUrl) {
     throw new Error('No gtfsPath or gtfsUrl provided');
   }
-
-  if (!config.skipImport) {
-    // Import GTFS
-    await importGtfs({
-      ...config,
-      agencies: [
-        {
-          path: config.gtfsPath,
-          url: config.gtfsUrl,
-        },
-      ],
-    });
+  if (config.skipImport && config.sqlitePath === ':memory:') {
+    throw new Error('skipImport requires a persistent sqlitePath');
   }
 
-  config.log('Starting GTFS Text-to-Speech Testing');
-  config.log(
-    'For each stop, press "y" if pronunciation is correct or "n" if incorrect. Press "r" to repeat. Press "e" to end.\n',
-  );
-
-  const stops = getStops();
-
-  const readStopName = (stop: IStop) => {
-    say.speak(stop.tts_stop_name ?? stop.stop_name);
-
-    let ttsExistingStopName = '';
-    if (stop.tts_stop_name) {
-      ttsExistingStopName = `*tts_stop_name exists*: ${chalk.blue(stop.tts_stop_name)}`;
-    }
-
-    const answer = readlineSync.keyIn(
-      `Stop ID ${stop.stop_id}: ${chalk.yellow(stop.stop_name)} ${ttsExistingStopName}\nPronunciation correct? (y/n/r/e): `,
-    );
-
-    say.stop();
-
-    if (answer.trim().toLowerCase() === 'r') {
-      readStopName(stop);
-      return;
-    }
-
-    if (answer.trim().toLowerCase() === 'n') {
-      const statement = db.prepare(
-        "UPDATE stops SET tts_stop_name = '***NEEDS VALUE***' WHERE stop_id = ?",
-      );
-      statement.run(stop.stop_id);
-      return;
-    }
-
-    if (answer.trim().toLowerCase() === 'y') {
-      return;
-    }
-
-    if (answer.trim().toLowerCase() === 'e') {
-      throw new Error('End Loop');
-    }
-
-    config.log('Valid options are "y", "n" and "r"\n');
-    readStopName(stop);
-    return;
-  };
-
-  for (const stop of stops) {
-    try {
-      await readStopName(stop as IStop);
-    } catch (error: any) {
-      if (error?.message === 'End Loop') {
-        break;
+  const gtfs = new Gtfs(gtfsOptions(config));
+  try {
+    if (!config.skipImport) {
+      const result = await gtfs.import();
+      if (!result.success) {
+        throw new Error(`GTFS import failed: ${JSON.stringify(result.errors)}`);
       }
     }
+    const stops = await gtfs.schedule.stops.all();
+    const agencies = await gtfs.schedule.agency.select('agency_name').all();
+    if (stops.length === 0 && agencies.length === 0) {
+      throw new Error(`No GTFS data found for sourceId "${config.sourceId}"`);
+    }
+    writeLog('Starting GTFS Text-to-Speech Testing');
+    writeLog(
+      'For each stop, press "y" if pronunciation is correct or "n" if incorrect. Press "r" to repeat. Press "e" to end.\n',
+    );
+
+    review: for (const stop of stops) {
+      while (true) {
+        let answer: string;
+        try {
+          say.speak(stop.tts_stop_name ?? stop.stop_name ?? '');
+          const existing = stop.tts_stop_name
+            ? `*tts_stop_name exists*: ${chalk.blue(stop.tts_stop_name)}`
+            : '';
+          answer = readlineSync
+            .keyIn(
+              `Stop ID ${stop.stop_id}: ${chalk.yellow(stop.stop_name ?? '')} ${existing}\nPronunciation correct? (y/n/r/e): `,
+            )
+            .trim()
+            .toLowerCase();
+        } finally {
+          say.stop();
+        }
+        if (answer === 'e') {
+          break review;
+        }
+        if (answer === 'n') {
+          await gtfs.database.withKysely({
+            callback: (database) =>
+              database
+                .updateTable('stops')
+                .set({ tts_stop_name: marker })
+                .where('source_id', '=', config.sourceId)
+                .where('stop_id', '=', stop.stop_id)
+                .execute(),
+          });
+          break;
+        }
+        if (answer === 'y') {
+          break;
+        }
+        if (answer !== 'r') {
+          writeLog('Valid options are "y", "n", "r" and "e"\n');
+        }
+      }
+    }
+
+    const folderName = generateFolderName(
+      agencies[0]?.agency_name ?? 'unknown-agency',
+    );
+    const exportPath = untildify(
+      config.exportPath || path.join(process.cwd(), 'gtfs-output', folderName),
+    );
+    await gtfs.export({
+      sourceId: config.sourceId,
+      outputDirectory: exportPath,
+      overwrite: true,
+    });
+    const count = await gtfs.schedule.stops
+      .where({ tts_stop_name: marker })
+      .count();
+    writeLog(`GTFS Data created at ${exportPath}`);
+    writeLog(
+      `${count} stops with incorrect pronunciation found. Look for "${marker}" in the tts_stop_name column in stops.txt.`,
+    );
+  } catch (error: any) {
+    if (error?.code === 'GTFS_DATABASE_OPEN_FAILED') {
+      logError(config)(
+        `Unable to open sqlite database "${config.sqlitePath}". Ensure its parent directory exists.`,
+      );
+    }
+    throw error;
+  } finally {
+    await gtfs.close();
   }
-
-  // Get agency name for export folder from first line of agency.txt
-  const agencies = getAgencies({}, ['agency_name']);
-  const folderName = generateFolderName(
-    agencies?.[0].agency_name ?? 'unknown-agency',
-  );
-  const defaultExportPath = path.join(process.cwd(), 'gtfs-output', folderName);
-  const exportPath = untildify(config.exportPath || defaultExportPath);
-
-  await prepDirectory(exportPath);
-
-  // Export GTFS with tts_stop_name field
-  await exportGtfs({
-    agencies: [],
-    exportPath,
-    sqlitePath: config.sqlitePath,
-  });
-
-  const stopTTSCount = db
-    .prepare(
-      "SELECT COUNT(*) FROM stops WHERE tts_stop_name = '***NEEDS VALUE***';",
-    )
-    .get();
-
-  config.log(`GTFS Data created at ${exportPath}`);
-  config.log(
-    `${stopTTSCount['COUNT(*)']} stops with incorrect pronunciation found. Look for "***NEEDS VALUE***" in the tts_stop_name column in stops.txt.`,
-  );
 };
 
 export default gtfsTTS;
