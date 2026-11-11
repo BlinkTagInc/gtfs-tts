@@ -1,0 +1,34 @@
+{
+  "database": { "path": "./gtfs.sqlite", "durability": "safe" },
+  "reporting": { "level": "info" },
+  "extensions": ["gtfs-plus", "gtfs-ride", "gtfs-to-html", "tods-v1"],
+  "sources": [
+    {
+      "sourceId": "transit",
+      "schedule": {
+        "url": "https://example.com/gtfs.zip",
+        "timeoutMs": 120000,
+        "import": {
+          "onExistingData": "replace-source",
+          "onSourceError": "abort",
+          "csv": { "skipEmptyLines": true, "relaxQuotes": true },
+          "validation": {
+            "mode": "off",
+            "onDuplicateKey": "reject",
+            "onUnknownField": "preserve"
+          }
+        }
+      }
+    }
+  ],
+  "review": {
+    "sourceId": "transit",
+    "input": "schedule",
+    "flaggedStopName": "***NEEDS VALUE***"
+  },
+  "export": {
+    "outputDirectory": "./gtfs-export/transit",
+    "overwrite": false,
+    "batchSize": 1000
+  }
+}

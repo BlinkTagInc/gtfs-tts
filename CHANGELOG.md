@@ -7,9 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Adopt node-GTFS v5 configuration: `database`, `sources`, `extensions`, `reporting`, and `export`.
+- Replace the default export with `reviewGtfs()`, typed review callbacks, and structured results.
+- Introduce `review.sourceId`, `review.input`, and `review.flaggedStopName`.
+- Use kebab-case CLI flags matching node-GTFS, with direct invocation and an optional `review` alias.
+- Make extensions and export overwrites opt-in; use node-GTFS export naming and reporting.
+- Review stops in stop ID order and import only the selected source.
+- Replace legacy tooling with tsdown, strict TypeScript, Oxlint, and release-it checks.
+- Use native speech commands with asynchronous terminal input; Linux now requires espeak.
+
+### Fixed
+
+- Scope reads, writes, counts, and exports to the selected source.
+- Speak original stop names for flagged stops and clear flags when accepted.
+- Propagate speech and review errors, close owned connections, and preserve existing output on failures.
+- Remove global error-handler side effects and report configuration errors once.
+
+### Added
+
+- Full config sample and multi-platform CI.
+- Regression tests for source isolation, review behavior, configuration, speech failures, and package boundaries.
+
+## [0.4.0] - 2026-11-10
+
 ### Updated
 
-- Updated to node-gtfs v5
+- Update to node-gtfs v5
+- Dependency Updates
 
 ## [0.3.2] - 2025-02-25
 

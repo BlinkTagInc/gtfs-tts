@@ -1,5 +1,7 @@
 allowBuilds:
-  esbuild: true
+  better-sqlite3: true
   protobufjs: true
 minimumReleaseAgeExclude:
   - gtfs@5.0.0-beta.0
+overrides:
+  'jsdoc>markdown-it': '15.0.3'

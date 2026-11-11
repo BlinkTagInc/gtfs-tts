@@ -1,72 +1,157 @@
+# GTFS Text-to-Speech
+
 <p align="center">
-  ➡️
-  <a href="#installation">Installation</a> |
-  <a href="#running">Running</a>
-  ⬅️
-  <br /><br />
-  <img src="docs/images/gtfs-tts-logo.svg" alt="GTFS Text-to-Speech Tester" />
-  <br /><br />
-  <a href="https://www.npmjs.com/package/gtfs-tts" rel="nofollow"><img src="https://img.shields.io/npm/v/gtfs-tts.svg?style=flat" style="max-width: 100%;"></a>
-  <a href="https://www.npmjs.com/package/gtfs-tts" rel="nofollow"><img src="https://img.shields.io/npm/dm/gtfs-tts.svg?style=flat" style="max-width: 100%;"></a>
-  <a href="https://github.com/BlinkTagInc/gtfs-tts/actions?query=workflow%3A%22Node+CI%22"><img src="https://img.shields.io/github/workflow/status/BlinkTagInc/gtfs-tts/Node%20CI.svg" alt="CircleCI" style="max-width: 100%;"></a>
-  <img src="https://img.shields.io/badge/License-MIT-yellow.svg">
-  <br /><br />
-  Review GTFS stop pronunciations automatically to determine which stops need a tts_stop_name value.
-  <br /><br />
-  <a href="https://nodei.co/npm/gtfs-tts/" rel="nofollow"><img src="https://nodei.co/npm/gtfs-tts.png?downloads=true" alt="NPM" style="max-width: 100%;"></a>
+  <img src="docs/images/gtfs-tts-logo.svg" alt="GTFS Text-to-Speech logo" width="240">
 </p>
 
-<hr>
+[![npm version](https://img.shields.io/npm/v/gtfs-tts.svg)](https://www.npmjs.com/package/gtfs-tts)
+[![Monthly npm downloads](https://img.shields.io/npm/dm/gtfs-tts.svg)](https://www.npmjs.com/package/gtfs-tts)
+[![Build status](https://img.shields.io/github/actions/workflow/status/BlinkTagInc/gtfs-tts/nodejs.yml)](https://github.com/BlinkTagInc/gtfs-tts/actions/workflows/nodejs.yml)
+[![MIT license](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.txt)
 
-GTFS Text-to-Speech Tester is a command-line tool that will read all [GTFS](https://gtfs.org) stop names using Text-to-Speech and allow flagging which names need Text-to-Speech values for `tts_stop_name` in `stops.txt`. Using this tool is the quickest way to determine which stops need phoenetic spellings, abbreviations written out, large digits written as words, ordinals written out or other changes so that they can be read. [Read More on GTFS Text-to-Speech](https://docs.google.com/document/d/1LObjgDyiiE6UBiA3GpoNOlZ36li-KKj6dwBzRTDa7VU/edit#heading=h.puwtf1nwatif)
+Listen to a transit feed's stop names and flag pronunciations that need work.
+**GTFS Text-to-Speech reads each stop aloud**, then exports a feed with incorrect
+pronunciations marked in the `tts_stop_name` column of `stops.txt`.
+Use those marks to find abbreviations, numbers, and names that need a phonetic spelling.
 
-<img width="818" src="https://user-images.githubusercontent.com/96217/131066444-a28f4ba3-6e93-4d20-9d6a-da32234e2350.png">
+Built on [node-GTFS v5](https://github.com/BlinkTagInc/node-gtfs), with the same
+configuration structure and import/export behavior. This release uses
+`gtfs@5.0.0-beta.0`.
 
-## Installation
+## Get started
 
-* Install Node.js 22.18+ (22.x), 24, or 26+. This version uses `gtfs@5.0.0-beta.0`.
+Install Node.js 22.18+ (22.x), 24, or 26+, then install the command:
 
-* Install `gtfs-tts` globally from npm:
+```sh
+npm install --global gtfs-tts
+gtfs-tts --input ./gtfs.zip --output ./reviewed-gtfs
+```
 
-    npm install gtfs-tts -g
+The input can be a ZIP or a directory of GTFS files. To download a feed, use
+`--url https://example.com/gtfs.zip` instead of `--input`.
 
-## Running
+Run this in an interactive terminal with audio enabled. Speech uses macOS's
+`say`, Windows PowerShell's `System.Speech`, or `espeak` on Linux. Install
+`espeak` with your system package manager on Linux.
 
-GTFS Text-to-Speech will read GTFS from a local directory or a URL.
+After each pronunciation finishes, press a key:
 
-If you have GTFS files in a local directory:
+| Key | Action                                    |
+| --- | ----------------------------------------- |
+| `y` | Accept the pronunciation and continue     |
+| `n` | Mark the stop for correction and continue |
+| `r` | Listen again                              |
+| `e` | End the review and export the work so far |
 
-    gtfs-tts --gtfsPath ./path/to/your/gtfs
+Stops are reviewed in stop ID order. If a stop has a `tts_stop_name`, that is
+what you hear; otherwise, you hear its `stop_name`. Previously flagged stops
+use the original name. Accepting one of those stops clears its flag.
 
-If you want to grab from a URL:
+Incorrect pronunciations are replaced with `***NEEDS VALUE***` in
+`tts_stop_name`. This also replaces any existing pronunciation for that stop.
+Edit these values in the exported `stops.txt` before publishing the feed.
+Unreviewed stops keep their existing values.
 
-    gtfs-tts --gtfsUrl https://transitfeeds.com/p/marin-transit/345/latest/download
+Existing export directories are preserved unless you pass `--overwrite` or set
+`export.overwrite` to `true`. Without `--output`, node-GTFS chooses a directory
+under `./gtfs-export` using the agency name and a source identity hash.
 
-The tool will read every stop listed in `stops.txt` using [your systems text-to-speech engine](https://www.npmjs.com/package/say). If a stop already has a value for `tts_stop_name`, it reads that value and still asks you to review it.
+## Configuration
 
-For each stop that doesn't have a value for `tts_stop_name`, it will ask if the pronunciation was correct and you can respond with:
+Start with [config-sample.json](config-sample.json), or see
+[config-sample-full.json](config-sample-full.json) for import and review options:
 
-`y` if correct
-`n` if incorrect
-`r` to repeat the stop name
-`e` to end reading stop names (will export what you have processed thus far)
+```json
+{
+  "database": { "path": "./gtfs.sqlite" },
+  "sources": [
+    {
+      "sourceId": "transit",
+      "schedule": { "path": "./gtfs.zip" }
+    }
+  ],
+  "export": { "outputDirectory": "./reviewed-gtfs" }
+}
+```
 
-After it is complete, GTFS Text-to-Speech will export a version of the GTFS where stops with incorrect pronunciation have `***NEEDS VALUE***` added to the `tts_stop_name` column in `stops.txt`. Using this exported stops.txt, you can manually correct each stop that needs a `tts_stop_name` value.
+```sh
+gtfs-tts --config ./config.json
+```
 
-## Alternative setup
+The command reads `./config.json` when present. Relative paths resolve from the
+current working directory. CLI flags override the corresponding config values;
+`--input` and `--url` replace the configured source list with one source.
+`--database` replaces the database configuration with a SQLite path.
+Use `gtfs-tts --help` for all flags.
 
-You can use a configuation JSON file modeled after `config-sample.json` with values for `gtfsPath`, `gtfsUrl` and `sqlitePath` if you want to avoid having to pass these as parameters every time you run the script.
+`database`, `sources`, `extensions`, `reporting`, and `export` follow
+[node-GTFS configuration](https://github.com/BlinkTagInc/node-gtfs/blob/main/docs/configuration.md).
+The default database is in memory. Optional GTFS extensions are opt-in; list
+any extensions your feed uses so their files survive the round trip. Unknown
+columns are preserved by default. This is a GTFS import/export, not a byte-for-byte
+copy: unsupported files are not copied.
 
-        // If config.json is in the current working directory
-        gtfs-tts
+The `review` section controls this tool:
 
-        // Otherwise specify location with `configPath` parameter
-        gtfs-tts --configPath ./path/to/config.json
+| Option            | Default                                | Purpose                                                                    |
+| ----------------- | -------------------------------------- | -------------------------------------------------------------------------- |
+| `sourceId`        | Sole configured source, or `"default"` | Source to import, review, and export; required with multiple sources       |
+| `input`           | `"schedule"`                           | Import the selected schedule, or use `"database"` for stored data          |
+| `flaggedStopName` | `"***NEEDS VALUE***"`                  | Marker without surrounding whitespace written for incorrect pronunciations |
 
-Then, after GTFS import you can re-run and skipImport if using a persistent sqlite database:
+Only the selected source is imported and reviewed. If you set `export.sourceId`,
+it must match the reviewed source. Choose a marker that cannot be mistaken for
+a real pronunciation, and keep it the same between reviews.
 
-        gtfs-tts --configPath ./path/to/config.json --skipImport
+To review stored data without replacing previous edits, use a persistent database:
+
+```sh
+gtfs-tts --database ./gtfs.sqlite --from-database \
+  --source-id transit --output ./reviewed-gtfs --overwrite
+```
+
+This starts from the first stop again; it does not track a resume position.
+Importing the schedule again replaces stored edits. Pressing Ctrl+C or encountering
+an error stops without exporting; changes already made to a persistent database
+remain available for another review.
+
+## JavaScript and TypeScript
+
+```js
+import { reviewGtfs } from 'gtfs-tts';
+
+const result = await reviewGtfs({
+  database: { path: ':memory:' },
+  sources: [{ sourceId: 'transit', schedule: { path: './gtfs.zip' } }],
+  export: { outputDirectory: './reviewed-gtfs' },
+});
+
+console.log(result.flaggedStops, result.outputDirectory);
+```
+
+By default, the API uses the same terminal and speech interaction as the CLI.
+For your own interface, pass a `reviewStop` callback as the second argument:
+
+```js
+const result = await reviewGtfs(config, {
+  async reviewStop({ stop, pronunciation, index, total }) {
+    return await yourReviewInterface({ stop, pronunciation, index, total });
+  },
+});
+```
+
+Return `"correct"`, `"incorrect"`, or `"end"`. The callback handles any speech or
+repeat behavior. `index` is zero-based. The result includes `sourceId`,
+`outputDirectory`, `totalStops`, `reviewedStops`, `flaggedStops`, and `endedEarly`.
+`flaggedStops` counts every marked stop in the exported source, including marks
+from earlier reviews.
+
+Library logging is silent unless you supply `reporting.reporter`; use
+`createConsoleReporter()` from `gtfs` for the CLI's output. `reporting.level`
+controls diagnostics (`silent`, `error`, `warn`, or `info`), not review prompts.
+Owned database connections close on success and failure; caller-supplied
+`database.client` connections remain open, following node-GTFS ownership rules.
 
 ## Contributing
 
-Pull requests are welcome, as is feedback and [reporting issues](https://github.com/blinktaginc/gtfs-tts/issues).
+[Issues and pull requests](https://github.com/BlinkTagInc/gtfs-tts/issues) are welcome.

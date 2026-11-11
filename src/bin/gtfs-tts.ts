@@ -1,54 +1,45 @@
 #!/usr/bin/env node
 
-import yargs from 'yargs';
-import { hideBin } from 'yargs/helpers';
+import { createConsoleReporter } from 'gtfs';
 
-import { getConfig } from '../lib/file-utils.js';
-import { formatError } from '../lib/log-utils.js';
-import gtfsTTS from '../index.js';
+import { reviewGtfs } from '../index.ts';
+import { loadConfig } from '../cli/config.ts';
+import { help, parseFlags } from '../cli/options.ts';
+import { version } from '../version.ts';
 
-const argv = await yargs(hideBin(process.argv))
-  .usage('Usage: $0 --configPath ./config.json')
-  .help()
-  .option('c', {
-    alias: 'configPath',
-    describe: 'Path to config file',
-    type: 'string',
-  })
-  .option('gtfsPath', {
-    describe: 'Path to GTFS (zipped or unzipped)',
-    type: 'string',
-  })
-  .option('gtfsUrl', {
-    describe: 'URL of zipped GTFS file',
-    type: 'string',
-  })
-  .option('skipImport', {
-    describe: 'Don’t import GTFS file.',
-    type: 'boolean',
-  })
-  .option('sqlitePath', {
-    type: 'string',
-    describe: 'Path to a v5 SQLite database',
-  })
-  .option('sourceId', {
-    type: 'string',
-    describe: 'Stable feed identity (default: default)',
-  })
-  .default('skipImport', undefined)
-  .parseAsync();
+async function main(): Promise<void> {
+  const args = process.argv.slice(2);
+  const command = args[0];
+  if (command === undefined) {
+    process.stdout.write(`${help}\n`);
+    return;
+  }
+  if (command === 'review') {
+    args.shift();
+  } else if (!command.startsWith('-')) {
+    throw new Error(
+      `Unknown command ${JSON.stringify(command)}; run gtfs-tts --help`,
+    );
+  }
+  const values = parseFlags(args);
+  if (values.help) {
+    process.stdout.write(`${help}\n`);
+    return;
+  }
+  if (values.version) {
+    process.stdout.write(`${version}\n`);
+    return;
+  }
+  const config = await loadConfig(values);
+  await reviewGtfs({
+    ...config,
+    reporting: { ...config.reporting, reporter: createConsoleReporter() },
+  });
+}
 
-const handleError = (error: any) => {
-  const text = error || 'Unknown Error';
-  process.stdout.write(`\n${formatError(text)}\n`);
-  console.error(error);
-  process.exit(1);
-};
-
-const setupImport = async () => {
-  const config = await getConfig(argv);
-  await gtfsTTS(config);
-  process.exit();
-};
-
-setupImport().catch(handleError);
+main().catch((error: unknown) => {
+  process.stderr.write(
+    `Error: ${error instanceof Error ? error.message : String(error)}\n`,
+  );
+  process.exitCode = 1;
+});

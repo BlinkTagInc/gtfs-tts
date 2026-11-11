@@ -1,0 +1,8 @@
+node_modules
+dist
+gtfs-output
+gtfs-export
+pnpm-lock.yaml
+config.json
+coverage
+*.tgz

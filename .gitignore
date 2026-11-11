@@ -1,11 +1,14 @@
 node_modules
-gtfs-output
-/config*
+/gtfs-output
+/gtfs-export
+/config*.json
 !config-sample.json
-
-.git
+!config-sample-full.json
 .DS_Store
 .vscode
-
-# Build files
 /dist
+/coverage
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.tgz

@@ -1,4 +1,10 @@
 {
-  "gtfsUrl": "https://marintransit.org/data/google_transit.zip",
-  "sourceId": "marin-transit"
+  "database": { "path": ":memory:" },
+  "sources": [
+    {
+      "sourceId": "transit",
+      "schedule": { "path": "./gtfs.zip" }
+    }
+  ],
+  "export": { "outputDirectory": "./gtfs-export/transit" }
 }

@@ -1,2 +1,9 @@
-export { default } from './lib/gtfs-tts.js';
-export type { AppConfig } from './lib/utils.js';
+export { reviewGtfs } from './review/review.ts';
+export type {
+  ReviewConfig,
+  ReviewDecision,
+  ReviewGtfsOptions,
+  ReviewInteraction,
+  ReviewResult,
+  ReviewStopContext,
+} from './types.ts';
