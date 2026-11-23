@@ -20,7 +20,7 @@ configuration structure and import/export behavior. This release uses
 
 ## Get started
 
-Install Node.js 22.18+ (22.x), 24, or 26+, then install the command:
+Install Node.js 24.22.3 or later, then install the command:
 
 ```sh
 npm install --global gtfs-tts
