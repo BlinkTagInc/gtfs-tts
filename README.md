@@ -15,8 +15,7 @@ pronunciations marked in the `tts_stop_name` column of `stops.txt`.
 Use those marks to find abbreviations, numbers, and names that need a phonetic spelling.
 
 Built on [node-GTFS v5](https://github.com/BlinkTagInc/node-gtfs), with the same
-configuration structure and import/export behavior. This release uses
-`gtfs@5.0.0-beta.0`.
+configuration structure and import/export behavior.
 
 ## Get started
 

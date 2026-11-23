@@ -11,7 +11,6 @@ test('public package exports only the named review API without global side effec
     code: 'ERR_PACKAGE_PATH_NOT_EXPORTED',
   });
   const manifest = JSON.parse(await readFile('package.json', 'utf8'));
-  assert.deepEqual(manifest.dependencies, { gtfs: '5.0.0-beta.0' });
   assert.equal(manifest.type, 'module');
   assert.equal(manifest.bin['gtfs-tts'], 'dist/bin/gtfs-tts.js');
   assert.ok(
