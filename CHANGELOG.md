@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-22
+
 ### Changed
 
 - Require Node.js 24.22.3 or later.
@@ -101,3 +103,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Initial Release
+
+[Unreleased]: https://github.com/BlinkTagInc/gtfs-tts/compare/1.0.1...main
+[1.0.1]: https://github.com/BlinkTagInc/gtfs-tts/compare/1.0.0...1.0.1

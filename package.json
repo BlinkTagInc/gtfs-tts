@@ -1,7 +1,7 @@
 {
   "name": "gtfs-tts",
   "description": "Listen to GTFS stop names, flag incorrect pronunciations, and export a reviewed feed for tts_stop_name.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "keywords": [
     "transit",
     "gtfs",
